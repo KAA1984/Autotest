@@ -1,10 +1,7 @@
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -78,18 +75,8 @@ public class HomeWork {
         Assertions.assertEquals(expectedUlsCount, headerElements.size());
     }
 
-    @Test
-    public void shouldSearch_byLink_Alerts() {
-        //GIVEN
-        String expectedUrl = "https://t.me/air_alert_ua";
-        //WHEN
-        driver.get("https://alerts.in.ua/");
-        WebElement linkElement = driver.findElement(By.partialLinkText("Повітряна тривога"));
-        linkElement.click();
-        String actualCurrentUrl = driver.getCurrentUrl();
-        //THEN
-        Assertions.assertEquals(expectedUrl, actualCurrentUrl);
-    }
+
+
 
     @Test
     public void shouldSearch_byLink_Minfin() throws InterruptedException {
@@ -132,7 +119,7 @@ public class HomeWork {
         //WHEN
         driver.get("https://www.selenium.dev/documentation/webdriver/elements/locators/");
         List<WebElement> elements =
-                driver.findElements(By.cssSelector("#tabs-10 > li:nth-child(2) > a"));
+                driver.findElements(By.cssSelector("#tabs-10 > li:nth-child(1) > a"));
         //THEN
         Assertions.assertEquals(1, elements.size());
         boolean isElementActive = elements.get(0).getAttribute("class").contains("active");
@@ -148,6 +135,112 @@ public class HomeWork {
         WebElement element = driver.findElement(By.xpath("//div[@id='map']"));
         //THEN
         Assertions.assertTrue(element.isEnabled());
+
+    }
+    @Test
+    public void testRegistrationForm() {
+        //GIVEN
+        //WHEN
+        driver.manage().window().maximize();
+        driver.get("http://online-sh.herokuapp.com/registration");
+
+        WebElement nameLocator = driver.findElement(By.xpath("//input[@name='name']"));
+        nameLocator.sendKeys("Andrey");
+
+        WebElement lastNameLocator = driver.findElement(By.xpath("//input[@name='last_Name']"));
+        lastNameLocator.sendKeys("Kalistratov");
+
+        WebElement emailInput = driver.findElement(By.id("exampleInputEmail1"));
+        emailInput.sendKeys("test@test.com");
+
+        WebElement passwordInput = driver.findElement(By.id("exampleInputPassword1"));
+        passwordInput.sendKeys("test");
+
+        passwordInput.submit();
+
+        //THEN
+        String currentUrl = driver.getCurrentUrl();
+        Assertions.assertEquals("http://online-sh.herokuapp.com/login", currentUrl);
+    }
+
+    @Test
+    public void clickCheckbox() {
+        //GIVEN
+        //WHEN
+        driver.manage().window().maximize();
+        driver.get("https://mdbootstrap.com/docs/standard/forms/checkbox/");
+        WebElement checkboxElementInput = driver.findElement(By.id("inlineCheckbox1"));
+        //THEN
+       Assertions.assertFalse(checkboxElementInput.isSelected());
+        //WHEN
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", checkboxElementInput);
+        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000L));
+        //THEN
+        Assertions.assertTrue(checkboxElementInput.isSelected());
+
+    }
+
+    @Test
+    public void clickRadiobutton() {
+        //GIVEN
+        //WHEN
+        driver.manage().window().maximize();
+        driver.get("https://getbootstrap.com/docs/5.0/forms/checks-radios/");
+        WebElement radiobuttonElementInput = driver.findElement(By.xpath("//input[@id='flexRadioDefault1']"));
+        //THEN
+        Assertions.assertTrue(radiobuttonElementInput.isEnabled());
+        //WHEN
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", radiobuttonElementInput);
+        //driver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000L));
+        //THEN
+        Assertions.assertTrue(radiobuttonElementInput.isSelected());
+
+    }
+    @Test
+    public void clickRadiobuttonJS() {
+        //GIVEN
+        //WHEN
+        driver.manage().window().maximize();
+        driver.get("https://www.javascripttutorial.net/javascript-dom/javascript-radio-button/");
+        driver.switchTo().frame(0);
+        WebElement radiobuttonElementInput = driver.findElement(By.xpath("//input[@id='xs']"));
+        //THEN
+        Assertions.assertTrue(radiobuttonElementInput.isEnabled());
+        //WHEN
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", radiobuttonElementInput);
+        //THEN
+        Assertions.assertTrue(radiobuttonElementInput.isSelected());
+
+    }
+    @Test
+    public void testLoginForm() {
+        //GIVEN
+        //WHEN
+        driver.manage().window().maximize();
+        driver.get("http://online-sh.herokuapp.com/registration");
+
+        WebElement emailInput = driver.findElement(By.id("exampleInputEmail1"));
+        //THEN
+        Assertions.assertTrue(emailInput.isDisplayed());
+
+        WebElement passwordInput = driver.findElement(By.id("exampleInputPassword1"));
+        //THEN
+        Assertions.assertTrue(passwordInput.isDisplayed());
+
+    }
+    @Test
+    public void testLogin() {
+        //GIVEN
+        String actualUrl= "http://online-sh.herokuapp.com/products";
+        //WHEN
+        driver.manage().window().maximize();
+        driver.get("http://online-sh.herokuapp.com/login");
+        WebElement elementButton = driver.findElement(By.className("btn-primary"));
+        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000L));
+        elementButton.click();
+        String currentUrl = driver.getCurrentUrl();
+        //THEN
+        Assertions.assertEquals(currentUrl,actualUrl);
 
     }
 
