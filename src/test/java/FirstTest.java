@@ -177,11 +177,22 @@ public class FirstTest {
         String expectedUrl = "https://t.me/air_alert_ua";
         //WHEN
         driver.get("https://alerts.in.ua/");
-        WebElement linkElement = driver.findElement(By.partialLinkText("Повітряна тривога"));
-        linkElement.click();
-        String actualCurrentUrl = driver.getCurrentUrl();
+        String mainWindow = driver.getWindowHandle();
+        WebElement linkElement = driver.findElement(By.xpath("(//a[text()[contains(.,'Повітряна тривога')]][1])"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()",linkElement);
+
         //THEN
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofMillis(10L));
+        wait.until(ExpectedConditions.numberOfWindowsToBe(2));
+        for(String windowHandler:driver.getWindowHandles()){
+            if(!mainWindow.contentEquals(windowHandler)){
+                driver.switchTo().window(windowHandler);
+                break;
+            }
+        }
+        String actualCurrentUrl = driver.getCurrentUrl();
         Assertions.assertEquals(expectedUrl, actualCurrentUrl);
+        driver.switchTo().window(mainWindow);
     }
 
     @Test
@@ -270,7 +281,7 @@ public class FirstTest {
         //WHEN
         driver.get("https://www.selenium.dev/documentation/webdriver/");
         WebElement headerElement = driver.findElement(By.xpath("(//div[@class='entry'])[3]//a"));
-        headerElement.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", headerElement);
         String currentUrl = driver.getCurrentUrl();
         //THEN
         org.assertj.core.api.Assertions.assertThat(currentUrl).endsWith("browser/");
@@ -367,7 +378,26 @@ public class FirstTest {
         Assertions.assertTrue(checkboxElementInput.isSelected());
 
     }
+    @Test
+    public void validationMassege() throws InterruptedException {
+        //GIVEN
+        String actualValidMessage = "Введте часть адреса до символа '@'.Адрес '@' неполный.";
+        //WHEN
+        driver.get("http://online-sh.herokuapp.com/login");
+        WebElement emailInputElement = driver.findElement(By.name("email"));
+        WebElement submitButtonElement = driver.findElement(By.className("btn-primary"));
+        String validationMessage = emailInputElement.getAttribute("validationMessage");
 
+        //THEN
+        emailInputElement.sendKeys("@ ");
+        submitButtonElement.click();
+
+        Thread.sleep(3000L);
+        //Assertions.assertTrue((Boolean)((JavascriptExecutor)driver).executeScript("return arguments[0].validity.valid;", emailInputElement), actualValidMessage);
+        Assertions.assertEquals(validationMessage, actualValidMessage);
+        //Assertions.assertTrue(Boolean.parseBoolean(emailInputElement.getAttribute("required")), "Username is required and message should be showing");
+
+    }
 
     @AfterEach
     public void cleanUp() {
