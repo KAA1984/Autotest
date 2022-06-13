@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -245,11 +247,12 @@ public class HomeWork {
 
     }
     @Test
-    public void linkToAddProdactsPage() throws InterruptedException {
+    public void linkToAddProductsPage() throws InterruptedException {
         String expectedResultLlink = "http://online-sh.herokuapp.com/products/add";
         new WebDriverWait(driver, Duration.ofMillis(500L));
         driver.manage().window().maximize();
-        driver.get("http://online-sh.herokuapp.com/products");
+        //driver.get("http://online-sh.herokuapp.com/products");
+        driver.get("http://online-sh.herokuapp.com/login");
         WebElement emailInput = driver.findElement(By.id("exampleInputEmail1"));
         emailInput.sendKeys("test@test.com");
         WebElement passwordInput = driver.findElement(By.id("exampleInputPassword1"));
@@ -273,22 +276,23 @@ public class HomeWork {
         passwordInput.submit();
         WebElement addProductsButton = driver.findElement(By.xpath("(//a[@href='/products/add'])"));
         ((JavascriptExecutor)driver).executeScript("arguments[0].click()", addProductsButton);
-        WebElement prodactNamefield = driver.findElement(By.id("exampleInputProduct1"));
-        WebElement prodactPricefield = driver.findElement(By.id("exampleInputPrice1"));
-        prodactNamefield.sendKeys("Test");
-        prodactPricefield.sendKeys("1");
-        prodactPricefield.submit();
+        WebElement productNamefield = driver.findElement(By.id("exampleInputProduct1"));
+        WebElement productPricefield = driver.findElement(By.id("exampleInputPrice1"));
+        productNamefield.sendKeys("Test");
+        productPricefield.sendKeys("1");
+        productPricefield.submit();
         Assertions.assertEquals(expectedResultLlink, driver.getCurrentUrl());
     }
 
     @Test
-    public void updatingOfTheProducts() throws InterruptedException {
+    public void updatingOfTheProducts() {
 
-         String actualNameProducts = "TestUpdated2";
-
+        //String actualNameProducts = "TestUpdated2";
+        String actualLink = "http://online-sh.herokuapp.com/products";
         new WebDriverWait(driver, Duration.ofMillis(500L));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(500L));
         driver.manage().window().maximize();
-        driver.get("http://online-sh.herokuapp.com/products/update?id=81");
+        driver.get("http://online-sh.herokuapp.com/products/update?id=127");
 
         WebElement emailInput = driver.findElement(By.id("exampleInputEmail1"));
         emailInput.sendKeys("test@test.com");
@@ -296,32 +300,70 @@ public class HomeWork {
         passwordInput.sendKeys("test");
         passwordInput.submit();
 
-        WebElement updateButton = driver.findElement(By.xpath("//button[text() = 'Update']/preceding-sibling::input[@value='81']"));
+        WebElement updateButton = driver.findElement(By.xpath("//button[text() = 'Update']/preceding-sibling::input[@value='127']"));
 
         updateButton.submit();
 
         WebElement prodactNamefield = driver.findElement(By.id("exampleInputProduct1"));
         WebElement prodactPricefield = driver.findElement(By.id("exampleInputPrice1"));
-        Thread.sleep(1500L);
+
         prodactNamefield.clear();
-        prodactNamefield.sendKeys("TestUpdated2");
-        Thread.sleep(1500L);
+        prodactNamefield.sendKeys("TestUpdated7");
+
         prodactPricefield.clear();
-        prodactPricefield.sendKeys("2");
-        Thread.sleep(1500L);
+        prodactPricefield.sendKeys("4");
+
         prodactPricefield.submit();
-        Thread.sleep(1500L);
 
-        //WebElement expectedData = driver.findElement(By.xpath("//*[contains(text(), '2022-05-25T15:44:49.767479')]"));
-        String expectedNameProducts = "TestUpdated2";
+        WebElement updatedElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("(//*[text()[contains(., 'TestUpdated7')]])")));
+        //wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tr[td/text()='TestUpdated7']//td[2]/text()")));
 
-        Assertions.assertEquals(expectedNameProducts,actualNameProducts);
+        //WebElement updatedElement = driver.findElement(By.xpath("//*[contains(text(), '2022-05-30T11:04:21.594343')]"));
+        //WebElement updatedElement = driver.findElement(By.xpath("//tr[td/text()='TestUpdated7']//td[2]/text()"));
+        //String expectedNameProducts = "TestUpdated2";
+        Assertions.assertTrue(updatedElement.isDisplayed());
     }
 
     @Test
-    public void deleteOfTheProducts() {
+    public void deleteOfTheProducts() throws InterruptedException {
 
-        String actualNameProducts = null;
+        //String actualNameProducts = "2022-05-27T09:52:50.722818";
+
+        new WebDriverWait(driver, Duration.ofMillis(500L));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(500L));
+        driver.manage().window().maximize();
+        driver.get("http://online-sh.herokuapp.com/products");
+        Actions actions = new Actions(driver);
+        WebElement emailInput = driver.findElement(By.id("exampleInputEmail1"));
+        emailInput.sendKeys("test@test.com");
+        WebElement passwordInput = driver.findElement(By.id("exampleInputPassword1"));
+        passwordInput.sendKeys("test");
+        passwordInput.submit();
+        //driver.switchTo().window("//button[text() = 'Delete']/preceding-sibling::input[@value='84']");
+
+        WebElement deleteButton = driver.findElement(By.xpath("(//button[@class ='btn btn-outline-danger'][1])"));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("(//button[@class ='btn btn-outline-danger'][1])")));
+        deleteButton.submit();
+        //((JavascriptExecutor) driver).executeScript("arguments[0].click()", deleteButton);
+        //boolean isElementActive = deleteButton.getDomAttribute("button type").contains("Delete");
+       // Assertions.assertTrue(isElementActive);
+        //((JavascriptExecutor) driver).executeScript("arguments[0].click()", deleteButton);
+        //Assertions.assertTrue(deleteButton.isEnabled());
+
+        //((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", deleteButton);
+        //((JavascriptExecutor) driver).executeScript("arguments[0].click()", deleteButton);
+        //Assertions.assertTrue(deleteButton.isSelected());
+         //actions.moveToElement(deleteButton).click().perform();
+        //deleteButton.submit();
+
+        //String expectedNameProducts = null;
+        //Assertions.assertEquals(expectedNameProducts,actualNameProducts);
+        //Assertions.assertTrue(deleteButton.isSelected());
+    }
+    @Test
+    public void lofOutFromTheProductsPage(){
+
+        String actualNameProductsPage = "http://online-sh.herokuapp.com/login";
 
         new WebDriverWait(driver, Duration.ofMillis(500L));
         driver.manage().window().maximize();
@@ -334,15 +376,65 @@ public class HomeWork {
         passwordInput.submit();
         //driver.switchTo().window("//button[text() = 'Delete']/preceding-sibling::input[@value='84']");
 
-        WebElement deleteButton = driver.findElement(By.xpath("//button[text() = 'Delete']/preceding-sibling::input[@value='84']"));
+        WebElement logOutButton = driver.findElement(By.xpath("//a[@href ='/logout']"));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(500L));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href ='/logout']"))).click();
 
-        //((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", deleteButton);
-        //((JavascriptExecutor) driver).executeScript("arguments[0].click()", deleteButton);
-        deleteButton.submit();
+       // Actions action= new Actions(driver);
+       // action.click();
+        //boolean isElementActive = logOutButton.getAttribute("class").contains("Delete");
+        //Assertions.assertTrue(isElementActive);
+        //action.moveToElement(logOutButton).build().perform();
+        //((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", logOutButton);
+       // boolean isElementActive = logOutButton.getAttribute("class").contains("Delete");
+        //Assertions.assertTrue(isElementActive);
+       //((JavascriptExecutor) driver).executeScript("arguments[0].click()", logOutButton);
+        //logOutButton.submit();
 
-        String expectedNameProducts = null;
-        Assertions.assertEquals(expectedNameProducts,actualNameProducts);
+        String expectedPage = driver.getCurrentUrl();
+        Assertions.assertEquals(expectedPage,actualNameProductsPage);
     }
+
+    @Test
+    public void checkAvailableOfTheProductsTable(){
+        new WebDriverWait(driver, Duration.ofMillis(500L));
+        driver.manage().window().maximize();
+        driver.get("http://online-sh.herokuapp.com/login");
+        WebElement emailInput = driver.findElement(By.id("exampleInputEmail1"));
+        emailInput.sendKeys("test@test.com");
+        WebElement passwordInput = driver.findElement(By.id("exampleInputPassword1"));
+        passwordInput.sendKeys("test");
+        passwordInput.submit();
+        //driver.get("http://online-sh.herokuapp.com/products");
+
+        List<WebElement> tableElements = driver.findElements(By.tagName("table"));
+
+        org.assertj.core.api.Assertions.assertThat(tableElements.size()).isEqualTo(1);
+
+    }
+
+    @Test
+    public void checkProductCountInTheProductTable(){
+        new WebDriverWait(driver, Duration.ofMillis(500L));
+        driver.manage().window().maximize();
+        driver.get("http://online-sh.herokuapp.com/login");
+        WebElement emailInput = driver.findElement(By.id("exampleInputEmail1"));
+        emailInput.sendKeys("test@test.com");
+        WebElement passwordInput = driver.findElement(By.id("exampleInputPassword1"));
+        passwordInput.sendKeys("test");
+        passwordInput.submit();
+        //driver.get("http://online-sh.herokuapp.com/products");
+
+        List<WebElement> tableElements = driver.findElements(By.tagName("table"));
+        List<WebElement> actualTableRows = tableElements.get(0).findElements(By.tagName("tbody")).
+                get(0).findElements(By.tagName("tr"));
+        System.out.println(actualTableRows.get(1).getText());
+        org.assertj.core.api.Assertions.assertThat(actualTableRows.size()).isEqualTo(25);
+        org.assertj.core.api.Assertions.assertThat(actualTableRows.get(1).getText()).contains("2022-06-04T03:12:25.592317");
+
+
+    }
+
 
     @AfterEach
     public void cleanUp() {

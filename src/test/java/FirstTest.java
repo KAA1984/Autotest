@@ -381,21 +381,22 @@ public class FirstTest {
     @Test
     public void validationMassege() throws InterruptedException {
         //GIVEN
-        String actualValidMessage = "Введте часть адреса до символа '@'.Адрес '@' неполный.";
+        //String actualValidMessage = "Введте часть адреса до символа '@'.Адрес '@' неполный.";
+        String existingUserEmail = "testtestcom";
         //WHEN
         driver.get("http://online-sh.herokuapp.com/login");
         WebElement emailInputElement = driver.findElement(By.name("email"));
-        WebElement submitButtonElement = driver.findElement(By.className("btn-primary"));
+        emailInputElement.sendKeys(existingUserEmail);
+        emailInputElement.submit();
+        //WebElement submitButtonElement = driver.findElement(By.className("btn-primary"));
         String validationMessage = emailInputElement.getAttribute("validationMessage");
 
         //THEN
-        emailInputElement.sendKeys("@ ");
-        submitButtonElement.click();
+        //emailInputElement.sendKeys("@ ");
+        //submitButtonElement.click();
 
-        Thread.sleep(3000L);
         //Assertions.assertTrue((Boolean)((JavascriptExecutor)driver).executeScript("return arguments[0].validity.valid;", emailInputElement), actualValidMessage);
-        Assertions.assertEquals(validationMessage, actualValidMessage);
-        //Assertions.assertTrue(Boolean.parseBoolean(emailInputElement.getAttribute("required")), "Username is required and message should be showing");
+        Assertions.assertEquals("Please include an '@' in the email address. 'testtestcom' is missing an '@'.",validationMessage);
 
     }
 
